@@ -1,6 +1,9 @@
 {
     "require": {
-        "easyswoole/easyswoole": "3.x"
+        "easyswoole/easyswoole": "3.x",
+        "easyswoole/annotation": "^2.0",
+        "php-amqplib/php-amqplib": "^2.12",
+        "easyswoole/task": "^1.1"
     },
     "autoload": {
         "psr-4": {

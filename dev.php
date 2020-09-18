@@ -19,5 +19,46 @@ return [
         ]
     ],
     'TEMP_DIR' => null,
-    'LOG_DIR' => null
+    'LOG_DIR' => null,
+
+    /**
+     * mysql
+     */
+    "MYSQL" => [
+        'host'          => '127.0.0.1',
+        'port'          => '3306',
+        'user'          => 'root',
+        'timeout'       => '5',
+        'charset'       => 'utf8mb4',
+        'password'      => 'tengfei31',
+        'database'      => 'search',
+        'POOL_MAX_NUM'  => '40',
+        'POOL_TIME_OUT' => '0.1'
+    ],
+    /**
+     * redis
+     */
+    "REDIS" => [
+        'host'          => '127.0.0.1',
+        'port'          => '6379',
+        'auth'          => 'admin',
+        'POOL_MAX_NUM'  => '40',
+        'POOL_MIN_NUM'  => '5',
+        'POOL_TIME_OUT' => '0.1',
+    ],
+    /**
+     * rabbitmq
+     */
+    "RABBITMQ" => [
+        "host" => "127.0.0.1",
+        "port" => "5673",
+        "user" => "admin",
+        "pass" => "admin",
+        "vhost" => "tengfei",
+    ],
+    /**
+     * elasticsearch
+     */
+    "ELASTICSEARCH" => [],
+    
 ];
