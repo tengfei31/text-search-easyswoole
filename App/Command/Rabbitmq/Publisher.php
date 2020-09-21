@@ -82,7 +82,7 @@ class Publisher implements CommandInterface
             $this->conn = new AMQPStreamConnection($conf["host"], $conf["port"], $conf["user"], $conf["pass"], $conf["vhost"]);
             $this->channel = $this->conn->channel();
             $this->channel->queue_declare($this->queue, false, true, false, false);
-            $this->channel->exchange_declare($this->exchange, AMQPExchangeType::TOPIC, false, true, false);
+            $this->channel->exchange_declare($this->exchange, AMQPExchangeType::DIRECT, false, true, false);
             $this->channel->queue_bind($this->queue, $this->exchange);
 
             $pid = posix_getpid();
@@ -90,7 +90,12 @@ class Publisher implements CommandInterface
             while(true) {
                 $i++;
                 go(function() use ($pid, $i) {
-                    $messageBody = sprintf("现在时间：%s；进程ID：%d；第%d个\n", date("Y-m-d H:i:s"), $pid, $i);
+                    if ($i % 2 == 0) {
+                        //偶数
+                        $messageBody = sprintf("偶数%d\n", $i);
+                    } else {
+                        $messageBody = sprintf("奇数%d\n", $i);
+                    }
                     $message = new AMQPMessage($messageBody, [
                         "content_type" => "text/plain",
                         "delivery_mode" => AMQPMessage::DELIVERY_MODE_PERSISTENT,

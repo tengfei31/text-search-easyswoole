@@ -16,7 +16,7 @@ class ConsumerTask implements TaskInterface
      *
      * @var string
      */
-    public $queue = "test";
+    public $queue = "tengfei_test";
 
     /**
      * 交换机名字
