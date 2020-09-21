@@ -3,9 +3,14 @@ namespace App\Command\Rabbitmq;
 
 use EasySwoole\Component\Process\Config;
 use EasySwoole\EasySwoole\Command\CommandInterface;
-use App\Process\ConsumerProcess;
+use App\Process\Rabbitmq\ConsumerProcess;
+use App\Task\Rabbitmq\ConsumerTask;
 use EasySwoole\Component\Process\Manager;
+use EasySwoole\EasySwoole\Config as EasySwooleConfig;
 use EasySwoole\EasySwoole\Logger;
+use EasySwoole\EasySwoole\Task\TaskManager;
+use EasySwoole\Task\Config as TaskConfig;
+use EasySwoole\Task\Task;
 use Exception;
 
 class Consumer implements CommandInterface
@@ -49,18 +54,16 @@ class Consumer implements CommandInterface
     public function exec(array $args): ?string
     {
         try {
-            //注册进程去消费
-            $processConfig = new Config();
-            $processConfig->setProcessName('rabbitmqConsumerProcess');//设置进程名称
-            $processConfig->setProcessGroup('rabbitmqGroup');//设置进程组
-            $processConfig->setArg(['a' => 123]);//传参
-            $processConfig->setRedirectStdinStdout(false);//是否重定向标准io
-            $processConfig->setPipeType($processConfig::PIPE_TYPE_SOCK_DGRAM);//设置管道类型
-            $processConfig->setEnableCoroutine(true);//是否自动开启协程
-            $processConfig->setMaxExitWaitTime(3);//最大退出等待时间
-            Manager::getInstance()->addProcess(new ConsumerProcess($processConfig));
-            Manager::getInstance()->addProcess(new ConsumerProcess($processConfig));
-            Manager::getInstance()->addProcess(new ConsumerProcess($processConfig));
+            $taskConf = EasySwooleConfig::getInstance()->getConf("MAIN_SERVER.TASK");
+            $taskConfig = new TaskConfig($taskConf);
+            $task = TaskManager::getInstance($taskConfig);
+            //task进程去消费
+            go(function() use ($task) {
+                $task->async(new ConsumerTask);
+            });
+            go(function() use ($task) {
+                $task->async(new ConsumerTask);
+            });
             
             return NULL;
         } catch (Exception $e) {

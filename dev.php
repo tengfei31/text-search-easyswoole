@@ -15,7 +15,7 @@ return [
         'TASK'=>[
             'workerNum'=>4,
             'maxRunningNum'=>128,
-            'timeout'=>15
+            'timeout'=>15,
         ]
     ],
     'TEMP_DIR' => null,

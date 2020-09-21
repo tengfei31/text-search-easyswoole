@@ -1,5 +1,5 @@
 <?php
-namespace App\Process;
+namespace App\Process\Rabbitmq;
 
 use EasySwoole\Component\Process\AbstractProcess;
 use EasySwoole\EasySwoole\Config;
@@ -17,7 +17,7 @@ class ConsumerProcess extends AbstractProcess
      *
      * @var string
      */
-    public $queue = "tengfei_test";
+    public $queue = "test";
 
     /**
      * 交换机名字
@@ -53,6 +53,7 @@ class ConsumerProcess extends AbstractProcess
     protected function run($arg)
     {
         try {
+            Logger::getInstance()->info(sprintf("pid=%d;process_name=%s", $this->getPid(), $this->getProcessName()));
             $conf = Config::getInstance()->getConf("RABBITMQ");
             $this->conn = new AMQPStreamConnection($conf["host"], $conf["port"], $conf["user"], $conf["pass"], $conf["vhost"]);
             $this->channel = $this->conn->channel();
@@ -62,11 +63,9 @@ class ConsumerProcess extends AbstractProcess
 
             $this->channel->basic_consume($this->queue, $this->consumerTag, false, false, false, false, [$this, 'process_message']);
     
-            go(function(){
-                while($this->channel->is_consuming()) {
-                    $this->channel->wait();
-                }
-            });
+            while($this->channel->is_consuming()) {
+                $this->channel->wait();
+            }
             return NULL;
         } catch (Exception $e) {
             printf("consumer错误：%s\n", $e->getMessage());
@@ -83,7 +82,7 @@ class ConsumerProcess extends AbstractProcess
      */
     public function process_message(AMQPMessage $message)
     {
-        Logger::getInstance()->info(sprintf("\n-------\n%s\n-----------\n", $message->getBody()));
+        //Logger::getInstance()->info(sprintf("\n-------\n%s\n-----------\n", $message->getBody()));
         //printf("\n-------\n%s\n-----------\n", $message->getBody());
         $message->ack();
 
@@ -118,6 +117,11 @@ class ConsumerProcess extends AbstractProcess
     protected function onException(Throwable $throwable, ...$args)
     {
         //错误就关闭连接
+        $this->onShutDown();
+    }
+
+    public function __destruct()
+    {
         $this->onShutDown();
     }
 }
