@@ -42,8 +42,8 @@ return [
         'host'          => '127.0.0.1',
         'port'          => '6379',
         'auth'          => 'admin',
-        'POOL_MAX_NUM'  => '40',
-        'POOL_MIN_NUM'  => '5',
+        'POOL_MAX_NUM'  => '50',
+        'POOL_MIN_NUM'  => '20',
         'POOL_TIME_OUT' => '0.1',
     ],
     /**
@@ -55,6 +55,9 @@ return [
         "user" => "admin",
         "pass" => "admin",
         "vhost" => "tengfei",
+        'POOL_MAX_NUM'  => '40',
+        'POOL_MIN_NUM'  => '20',
+        'POOL_TIME_OUT' => '0.1'
     ],
     /**
      * elasticsearch

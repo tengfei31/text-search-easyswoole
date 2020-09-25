@@ -80,29 +80,25 @@ class Publisher implements CommandInterface
 
             $conf = Config::getInstance()->getConf("RABBITMQ");
             $this->conn = new AMQPStreamConnection($conf["host"], $conf["port"], $conf["user"], $conf["pass"], $conf["vhost"]);
+            
+
             $this->channel = $this->conn->channel();
             $this->channel->queue_declare($this->queue, false, true, false, false);
             $this->channel->exchange_declare($this->exchange, AMQPExchangeType::DIRECT, false, true, false);
             $this->channel->queue_bind($this->queue, $this->exchange);
 
             $pid = posix_getpid();
-            $i = 0;
-            while(true) {
-                $i++;
-                go(function() use ($pid, $i) {
-                    if ($i % 2 == 0) {
-                        //偶数
-                        $messageBody = sprintf("偶数%d\n", $i);
-                    } else {
-                        $messageBody = sprintf("奇数%d\n", $i);
-                    }
-                    $message = new AMQPMessage($messageBody, [
-                        "content_type" => "text/plain",
-                        "delivery_mode" => AMQPMessage::DELIVERY_MODE_PERSISTENT,
-                    ]);
-                    $this->channel->basic_publish($message, $this->exchange);
-                });
+            if ($pid % 2 == 0) {
+                //偶数
+                $messageBody = sprintf("偶数%d", $pid);
+            } else {
+                $messageBody = sprintf("奇数%d", $pid);
             }
+            $message = new AMQPMessage($messageBody, [
+                "content_type" => "text/plain",
+                "delivery_mode" => AMQPMessage::DELIVERY_MODE_PERSISTENT,
+            ]);
+            $this->channel->basic_publish($message, $this->exchange);
             return NULL;
         } catch (Exception $e) {
             printf("publisher错误：%s\n", $e->getMessage());

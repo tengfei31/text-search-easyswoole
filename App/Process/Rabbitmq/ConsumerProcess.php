@@ -82,10 +82,9 @@ class ConsumerProcess extends AbstractProcess
      */
     public function process_message(AMQPMessage $message)
     {
-        //Logger::getInstance()->info(sprintf("\n-------\n%s\n-----------\n", $message->getBody()));
-        //printf("\n-------\n%s\n-----------\n", $message->getBody());
+        //处理业务
+        Logger::getInstance()->info(sprintf("-------%s-------", $message->getBody()));
         $message->ack();
-
         if ($message->getBody() == "quit") {
             $message->getChannel()->basic_cancel($message->getConsumerTag());
         }

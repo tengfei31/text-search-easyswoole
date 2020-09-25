@@ -1,16 +1,12 @@
 <?php
 namespace App\Command\Rabbitmq;
 
-use EasySwoole\Component\Process\Config;
 use EasySwoole\EasySwoole\Command\CommandInterface;
-use App\Process\Rabbitmq\ConsumerProcess;
 use App\Task\Rabbitmq\ConsumerTask;
-use EasySwoole\Component\Process\Manager;
 use EasySwoole\EasySwoole\Config as EasySwooleConfig;
 use EasySwoole\EasySwoole\Logger;
 use EasySwoole\EasySwoole\Task\TaskManager;
 use EasySwoole\Task\Config as TaskConfig;
-use EasySwoole\Task\Task;
 use Exception;
 
 class Consumer implements CommandInterface
