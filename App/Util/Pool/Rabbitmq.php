@@ -4,6 +4,9 @@ namespace App\Util\Pool;
 use EasySwoole\Pool\ObjectInterface;
 use PhpAmqpLib\Connection\AMQPStreamConnection;
 
+/**
+ * 单个连接对象
+ */
 class Rabbitmq implements ObjectInterface
 {
     /**
@@ -37,15 +40,13 @@ class Rabbitmq implements ObjectInterface
     public function __construct(RabbitmqConfig $conf)
     {
         $this->config = $conf;
-        $this->conn = new AMQPStreamConnection($this->config->getHost(), $this->config->getPort(), $this->config->getUser(), $this->config->getPass(), $this->config->getVhost());
-        $this->isConn = true;       
     }
 
-    // public function connect()
-    // {
-    //     $this->conn = new AMQPStreamConnection($this->config->getHost(), $this->config->getPort(), $this->config->getUser(), $this->config->getPass(), $this->config->getVhost());
-    //     $this->setIsUse(false);
-    // }
+    public function connect()
+    {
+        $this->conn = new AMQPStreamConnection($this->config->getHost(), $this->config->getPort(), $this->config->getUser(), $this->config->getPass(), $this->config->getVhost());
+        $this->isConn = true;
+    }
 
     /**
      * unset 的时候执行
@@ -94,5 +95,10 @@ class Rabbitmq implements ObjectInterface
     public function getIsUse() :bool
     {
         return $this->isUse;
+    }
+
+    public function __destruct()
+    {
+        $this->gc();
     }
 }

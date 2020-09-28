@@ -16,6 +16,8 @@ class RabbitmqPool extends AbstractPool
 
     protected function createObject()
     {
-        return new Rabbitmq($this->rabbitmqConfig);
+        $connect = new Rabbitmq($this->rabbitmqConfig);
+        $connect->connect();
+        return $connect;
     }
 }

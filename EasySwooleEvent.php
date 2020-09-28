@@ -2,6 +2,7 @@
 namespace EasySwoole\EasySwoole;
 
 use App\Process\CustomProcess;
+use App\Util\Pool\Register\RegisterPool;
 use EasySwoole\EasySwoole\Swoole\EventRegister;
 use EasySwoole\EasySwoole\AbstractInterface\Event;
 use EasySwoole\Http\Request;
@@ -14,13 +15,15 @@ class EasySwooleEvent implements Event
     {
         // TODO: Implement initialize() method.
         date_default_timezone_set('Asia/Shanghai');
+        //注册连接池
+        RegisterPool::getInstance()->register();
     }
 
     public static function mainServerCreate(EventRegister $register)
     {
         // TODO: Implement mainServerCreate() method.
         //注册自定义进程
-        CustomProcess::getInstance(1)->run();
+        CustomProcess::getInstance()->run();
     }
 
     public static function onRequest(Request $request, Response $response): bool

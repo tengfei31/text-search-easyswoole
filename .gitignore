@@ -1,5 +1,6 @@
 .vscode
 .ide
+.idea
 vendor
 Log
 Temp
