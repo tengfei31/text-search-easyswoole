@@ -23,7 +23,7 @@ class EasySwooleEvent implements Event
     {
         // TODO: Implement mainServerCreate() method.
         //注册自定义进程
-        CustomProcess::getInstance()->run();
+        CustomProcess::getInstance(1)->run();
     }
 
     public static function onRequest(Request $request, Response $response): bool
